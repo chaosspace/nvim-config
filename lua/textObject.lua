@@ -1,0 +1,2 @@
+
+require("textObject").setup{}
