@@ -71,8 +71,6 @@ vim.keymap.set('n', '<leader><left>', function()
 end, { noremap = true, silent = true, desc = '减少窗口宽度' })
 
 
-
-
 -- 4. NvimTree 快捷键（结合之前的简化命令）
 vim.keymap.set('n', '<leader>tr', '<cmd>NvimTreeOpen<CR>', { noremap = true, silent = true, desc = '打开/关闭文件树' })
 
@@ -93,16 +91,20 @@ vim.keymap.set('n', '<leader>j', '<C-w>j', opts)
 vim.keymap.set('n', '<leader>k', '<C-w>k', opts)
 vim.keymap.set('n', '<leader>l', '<C-w>l', opts)
 
+-- 7. 文件操作
+vim.keymap.set('n', '<leader>w', ':w<CR>', opts) --保存
+vim.keymap.set('n', '<leader>q', ':q<CR>', opts) --关闭
+vim.keymap.set('n', '<leader>Q', ':q!<CR>', opts) --不保存退出
+
+-- 8.
+
 -----------------
 -- Visual mode --
 -----------------
 
--- Hit: start visual mode with the same area as the previous area and the same mode
-vim.keymap.set('v', '<', '<gv', opts)
-vim.keymap.set('v', '>', '>gv', opts)
-
-vim.keymap.set("v", "<Tab>", ">", opts)
-vim.keymap.set("v", "<S-Tab>", "<", opts) -- Shift+Tab 减少缩进
+-- v mode 控制缩进（执行后保持选中状态）
+vim.keymap.set("v", "<Tab>", ">gv", opts)
+vim.keymap.set("v", "<S-Tab>", "<gv", opts) -- Shift+Tab 减少缩进
 
 -------------
 -- Command --
