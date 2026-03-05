@@ -126,7 +126,48 @@ return {
       servers = {
         gopls = {},
         rust_analyzer = {},
-        ts_ls = {},
+        ts_ls = {
+          settings = {
+            javascript = {
+              inlayHints = {
+                includeInlayParameterNameHints = 'all',
+                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                includeInlayFunctionParameterTypeHints = true,
+                includeInlayVariableTypeHints = true,
+                includeInlayPropertyDeclarationTypeHints = true,
+                includeInlayFunctionLikeReturnTypeHints = true,
+                includeInlayEnumMemberValueHints = true,
+              },
+              validate = { enable = true, spelling = true },
+              -- 自定义词典
+              suggest = {
+                autoImports = true,
+                includeCompletionsForModuleExports = true,
+              },
+            },
+            typescript = {
+              inlayHints = {
+                includeInlayParameterNameHints = 'all',
+                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                includeInlayFunctionParameterTypeHints = true,
+                includeInlayVariableTypeHints = true,
+                includeInlayPropertyDeclarationTypeHints = true,
+                includeInlayFunctionLikeReturnTypeHints = true,
+                includeInlayEnumMemberValueHints = true,
+              },
+              validate = { enable = true, spelling = true },
+              -- 自定义词典
+              suggest = {
+                autoImports = true,
+                includeCompletionsForModuleExports = true,
+              },
+            },
+            tsconfig = {
+              -- 启用拼写检查
+              spelling = true,
+            },
+          },
+        },
         lua_ls = {
           settings = {
             Lua = {

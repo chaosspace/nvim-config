@@ -23,14 +23,18 @@ local function switch_to_buffer()
   table.sort(buf_ids)
 
 
-  if num >= 0 and num <= 9 then
-    local target_buf = buf_ids[num + 1]
+  if num >= 1 and num <= 9 then
+    if num > #buf_ids then
+      vim.notify('Buffer ' .. num .. ' 不存在 (当前只有 ' .. #buf_ids .. ' 个buffer)', vim.log.levels.WARN)
+      return
+    end
+    local target_buf = buf_ids[num]
     local ok, _ = pcall(vim.cmd, 'buffer ' .. target_buf)
     if not ok then
-      vim.notify('Buffer ' ..num.. ' 不存在', vim.log.levels.ERROR)
+      vim.notify('Buffer ' .. num .. ' 不存在', vim.log.levels.ERROR)
     end
   else
-    vim.notify('请输入数字0 - 9', vim.log.levels.WARN)
+    vim.notify('请输入数字 1 - 9', vim.log.levels.WARN)
   end
 end
 
