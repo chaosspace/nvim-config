@@ -97,7 +97,9 @@ vim.keymap.set('n', '<leader>q', ':q<CR>', opts) --关闭
 vim.keymap.set('n', '<leader>Q', ':q!<CR>', opts) --不保存退出
 vim.keymap.set('n', '<leader>x', ':x<CR>', opts) --不保存退出
 
--- 8.
+-- 8. telescope
+vim.keymap.set('n', '<leader>ff', ':Telescope find_files<CR>', { desc = 'Telescope find files' })
+vim.keymap.set('n', '<leader>fb', ':Telescope buffers<CR>', { desc = 'Telescope buffers' })
 
 -----------------
 -- Visual mode --
