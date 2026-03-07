@@ -101,6 +101,14 @@ vim.keymap.set('n', '<leader>x', ':x<CR>', opts) --不保存退出
 vim.keymap.set('n', '<leader>ff', ':Telescope find_files<CR>', { desc = 'Telescope find files' })
 vim.keymap.set('n', '<leader>fb', ':Telescope buffers<CR>', { desc = 'Telescope buffers' })
 
+-- 9. notice history
+vim.keymap.set("n", "<leader>nl", function()
+  require("noice").cmd("last")
+end)
+vim.keymap.set("n", "<leader>nh", function()
+  require("noice").cmd("history")
+end)
+
 -----------------
 -- Visual mode --
 -----------------
