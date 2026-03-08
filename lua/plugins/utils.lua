@@ -53,6 +53,4 @@ return {
       "rcarriga/nvim-notify",
     }
   },
-  -- 光标处单词高亮
-  { 'nvim-mini/mini.cursorword', version = false },
 }

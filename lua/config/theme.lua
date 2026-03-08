@@ -24,5 +24,6 @@ require("ibl").setup {
   }
 }
 
-require('mini.starter').setup()
-require('mini.cursorword').setup()
+require('mini.starter').setup({
+  footer = "Be your own GOAT"
+})
