@@ -2,12 +2,6 @@ vim.opt.clipboard = 'unnamedplus' -- use system clipboard
 vim.opt.completeopt = { 'menu', 'menuone', 'noselect' }
 vim.opt.mouse = 'a' -- allow the mouse to be used in Nvim
 
--- Tab
-vim.o.tabstop = 2
-vim.o.softtabstop = 2
-vim.o.shiftwidth = 2
-vim.o.expandtab = true
-
 -- UI Config
 vim.opt.number = true -- show absolute number
 vim.opt.relativenumber = true -- add numbers to each line on the left side
@@ -22,10 +16,11 @@ vim.opt.incsearch = true -- search as characters are entered
 vim.opt.ignorecase = true -- ignore case in searches by default
 vim.opt.smartcase = true -- but make it case sensitive if an uppercase is entered
 
--- Format
-vim.opt.tabstop = 2 -- number of visual spaces per TAB
-vim.opt.softtabstop = 2 -- number of spacesin tab when editing
-vim.opt.shiftwidth = 2 -- insert 4 spaces on a tab
+-- Tab
+vim.g.filetype_indent = "off"
+vim.opt.tabstop = 2
+vim.opt.softtabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
 vim.opt.autoindent = true -- 自动继承上一行缩进
-vim.opt.expandtab = true -- 制表符转空格
 vim.opt.smartindent = true -- 自动缩进
