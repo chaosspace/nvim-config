@@ -7,11 +7,10 @@ require("bufferline").setup({
     truncate_names = true,   -- 截断长名称
     color_icons = true,              -- 启用彩色图标
     show_buffer_icons = true,        -- 显示缓冲区图标
-    buffer_close_icon = "🗙",
+    buffer_close_icon = "✘",
     show_tab_indicators = true,      -- 显示标签指示器
     show_duplicate_prefix = true,    -- 显示重复前缀
     persist_buffer_sort = true,      -- 持久化缓冲区排序
-    separator_style = "thin",        -- 标签分隔符样式（细边框）
     enforce_regular_tabs = false,
     always_show_bufferline = true,   -- 始终显示 bufferline
     hover = {                        -- 悬浮提示
