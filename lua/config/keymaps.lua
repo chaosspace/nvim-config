@@ -97,6 +97,11 @@ vim.keymap.set('n', '<leader>x', ':x<CR>', opts) --不保存退出
 vim.keymap.set('n', '<leader>ff', ':Telescope find_files<CR>', { desc = 'Telescope find files' })
 vim.keymap.set('n', '<leader>fb', ':Telescope buffers<CR>', { desc = 'Telescope buffers' })
 
+-- overseer 任务运行
+vim.keymap.set('n', '<leader>or', '<cmd>OverseerRun<CR>', { desc = '运行任务' })
+vim.keymap.set('n', '<leader>ot', '<cmd>OverseerToggle<CR>', { desc = '任务面板' })
+vim.keymap.set('n', '<leader>ok', '<cmd>OverseerKill<CR>', { desc = '终止任务' })
+
 -- 9. notice history
 vim.keymap.set("n", "<leader>nl", function()
   require("noice").cmd("last")
@@ -116,4 +121,7 @@ vim.keymap.set("v", "<S-Tab>", "<gv", opts) -- Shift+Tab 减少缩进
 -------------
 -- Command --
 -------------
+
+-- 搜索计数（先 /搜索内容，再按 <leader>sm 统计匹配数量）
+vim.keymap.set('n', '<leader>sn', '<Cmd>%s///gn<CR>', { noremap = true, silent = true, desc = 'Count matches for last search' })
 
