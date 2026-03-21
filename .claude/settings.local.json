@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git commit:*)",
+      "Bash(git push)",
+      "Bash(nvim:*)",
+      "Bash(rustc:*)",
+      "Bash(cargo:*)",
+      "Bash(scoop which:*)",
+      "Bash(scoop list:*)",
+      "Bash(scoop install:*)",
+      "Bash(export:*)",
+      "Bash(~/.cargo/bin/rustc.exe:*)",
+      "Bash(~/.cargo/bin/cargo.exe:*)",
+      "Bash(\"/c/Users/94001/scoop/persist/rustup/.rustup/toolchains/stable-x86_64-pc-windows-msvc/bin/rustc.exe\" --version)",
+      "Bash(reg query:*)",
+      "Bash(reg:*)",
+      "Bash(powershell:*)",
+      "mcp__MiniMax__understand_image",
+      "Bash(rustup install:*)",
+      "Bash(\"/c/Users/94001/scoop/persist/rustup/.cargo/bin/rustup.exe\" install stable-x86_64-pc-windows-gnu)",
+      "Bash(\"/c/Users/94001/scoop/persist/rustup/.cargo/bin/rustup.exe\":*)",
+      "Bash(\"/c/Users/94001/scoop/persist/rustup/.cargo/bin/cargo.exe\" build --manifest-path \"/tmp/test_rust_proj/Cargo.toml\")",
+      "Bash(\"/c/Users/94001/scoop/persist/rustup/.cargo/bin/rustc.exe\" --version)",
+      "Bash(\"/c/Users/94001/scoop/persist/rustup/.cargo/bin/cargo.exe\" --version)"
+    ]
+  }
+}
