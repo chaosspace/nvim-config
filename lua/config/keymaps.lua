@@ -114,6 +114,11 @@ vim.keymap.set("n", "<leader>nh", function()
   require("noice").cmd("history")
 end)
 
+vim.keymap.set("n", "gd", vim.lsp.buf.declaration, { desc = "Go to declaration" })
+vim.keymap.set("n", "gt", vim.lsp.buf.type_definition, { desc = "Go to type definition"
+})
+vim.keymap.set("n", "gr", vim.lsp.buf.references, { desc = "Go to references" })
+
 -----------------
 -- Visual mode --
 -----------------
