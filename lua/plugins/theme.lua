@@ -9,12 +9,12 @@ return {
     "sphamba/smear-cursor.nvim",
 
     opts = {
-      time_interval = 7,
+      time_interval = 4,
       smear_insert_mode = true,
-      stiffness = 0.5,
-      trailing_stiffness = 0.5,
-      nerver_draw_over_target = false,
-      distance_stop_animating = 0.5,
+      stiffness = 0.4,
+      trailing_stiffness = 0.3,
+      never_draw_over_target = false,
+      distance_stop_animating = 0.3,
     },
   },
 }
