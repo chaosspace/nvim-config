@@ -39,10 +39,10 @@ vim.api.nvim_create_autocmd("BufReadPost", {
   end,
 })
 
--- Rust indentation
+-- Shared indentation overrides
 vim.api.nvim_create_autocmd("FileType", {
-  group = augroup("rust_indent"),
-  pattern = "rust",
+  group = augroup("common_indent"),
+  pattern = { "python", "javascript", "javascriptreact", "typescript", "typescriptreact", "lua", "json", "rust", "css", "scss", "html" },
   callback = function()
     vim.bo.shiftwidth = 2
     vim.bo.softtabstop = 2
