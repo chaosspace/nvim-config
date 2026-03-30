@@ -100,7 +100,11 @@ vim.keymap.set('n', '<leader>fb', ':Telescope buffers<CR>', { desc = 'Telescope 
 -- overseer 任务运行
 vim.keymap.set('n', '<leader>or', '<cmd>OverseerRun<CR>', { desc = '运行任务' })
 vim.keymap.set('n', '<leader>ot', '<cmd>OverseerToggle<CR>', { desc = '任务面板' })
-vim.keymap.set('n', '<leader>ok', '<cmd>OverseerKill<CR>', { desc = '终止任务' })
+vim.keymap.set('n', '<leader>ok', '<cmd>OverseerToggle<CR>', { desc = '停止任务(打开面板选择)' })
+
+-- Terminal mode - 退出 terminal 并关闭 overseer 面板
+vim.keymap.set('t', 'jk', '<C-\\><C-n>', { noremap = true, silent = true, desc = '退出Terminal回到Normal模式' })
+vim.keymap.set('t', 'qq', '<C-\\><C-n>', { noremap = true, silent = true, desc = '退出Terminal回到Normal模式' })
 
 -- 9. notice history
 vim.keymap.set("n", "<leader>nl", function()
