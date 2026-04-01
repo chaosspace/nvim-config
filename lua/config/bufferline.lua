@@ -13,6 +13,8 @@ require("bufferline").setup({
     persist_buffer_sort = true,      -- 持久化缓冲区排序
     enforce_regular_tabs = false,
     always_show_bufferline = true,   -- 始终显示 bufferline
+    diagnostics = false,              -- 不显示诊断信息
+    diagnostics_update_in_insert = false, -- 在插入模式下不更新诊断信息
     hover = {                        -- 悬浮提示
       enabled = true,
       delay = 200,

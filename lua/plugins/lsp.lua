@@ -24,17 +24,53 @@ return {
     config = function()
       local cmp = require('cmp')
       local luasnip = require('luasnip')
+      local kind_icons = {
+        Text = '󰉿',
+        Method = 'm',
+        Function = '󰊕',
+        Constructor = '',
+        Field = '',
+        Variable = '󰆧',
+        Class = '󰌗',
+        Interface = '',
+        Module = '',
+        Property = '',
+        Unit = '',
+        Value = '󰎠',
+        Enum = '',
+        Keyword = '󰌋',
+        Snippet = '',
+        Color = '󰏘',
+        File = '󰈙',
+        Reference = '',
+        Folder = '󰉋',
+        EnumMember = '',
+        Constant = '󰇽',
+        Struct = '',
+        Event = '',
+        Operator = '󰆕',
+        TypeParameter = '󰊄',
+      }
 
       cmp.setup({
+        completion = {
+          completeopt = 'menu,menuone,noinsert',
+        },
         snippet = {
           expand = function(args)
             luasnip.lsp_expand(args.body)
           end,
         },
+        sources = cmp.config.sources({
+          { name = 'nvim_lsp' },
+          { name = 'luasnip' },
+          { name = 'path' },
+        }, {
+          { name = 'buffer' },
+        }),
         mapping = cmp.mapping.preset.insert({
           ['<C-b>'] = cmp.mapping.scroll_docs(-4),
           ['<C-f>'] = cmp.mapping.scroll_docs(4),
-          ['<C-Space>'] = cmp.mapping.complete(),
           ['<CR>'] = cmp.mapping.confirm({ select = true }),
           ['<Tab>'] = cmp.mapping(function(fallback)
             if cmp.visible() then
@@ -55,13 +91,19 @@ return {
             end
           end, { 'i', 's' }),
         }),
-        sources = cmp.config.sources({
-          { name = 'nvim_lsp' },
-          { name = 'luasnip' },
-          { name = 'path' },
-        }, {
-          { name = 'buffer' },
-        }),
+        formating = {
+          fields = { 'kind', 'abbr', 'menu' },
+          format = function(entry, vim_item)
+            vim_item.kind = string.format('%s', kind_icons[vim_item.kind])
+            vim_item.menu = ({
+              nvim_lsp = '[LSP]',
+              luasnip = '[Snippet]',
+              buffer = '[Buffer]',
+              path = '[Path]',
+            })[entry.source.name]
+            return vim_item
+          end,
+        }
       })
     end,
   },
@@ -85,7 +127,6 @@ return {
     dependencies = { 'williamboman/mason.nvim' },
     opts = {
       ensure_installed = {
-        'gopls',
         'rust_analyzer',
         'ts_ls',
         'lua_ls',
@@ -124,7 +165,6 @@ return {
         timeout_ms = nil,
       },
       servers = {
-        gopls = {},
         rust_analyzer = {},
         ts_ls = {
           settings = {
@@ -171,8 +211,11 @@ return {
         lua_ls = {
           settings = {
             Lua = {
+              completion = {
+                callSnippet = 'Replace',
+              },
               runtime = { version = 'LuaJIT' },
-              diagnostics = { globals = { 'vim' } },
+              diagnostics = { disable = { 'missing-fields' } },
               workspace = {
                 library = vim.api.nvim_get_runtime_file('', true),
                 checkThirdParty = false,

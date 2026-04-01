@@ -24,3 +24,7 @@ vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
 vim.opt.autoindent = true -- 自动继承上一行缩进
 vim.opt.smartindent = true -- 自动缩进
+
+-- wrap
+vim.opt.wrap = false -- disable line wrap
+vim.opt.linebreak = true -- break lines at word boundaries

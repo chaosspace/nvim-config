@@ -13,6 +13,30 @@ return {
           width = 0.87,
           height = 0.80,
         },
+        mappings = {
+          i = {
+            ["<C-j>"] = "move_selection_next",
+            ["<C-k>"] = "move_selection_previous",
+            ["<C-l>"] = "select_default",
+          },
+        },
+        pickers = {
+          find_files = {
+            file_ignore_patterns = { "node_modules", ".git", ".venv" }, 
+            hidden = true,
+          },
+        },
+        live_grep = {
+          file_ignore_patterns = { "node_modules", ".git", ".venv" },
+          additional_args = function()
+            return { "--hidden" }
+          end,
+        },
+        extensions = {
+          ['ui-select'] = {
+            require('telescope.themes').get_dropdown(),
+          },
+        }
       },
     },
   },
@@ -56,7 +80,6 @@ return {
       },
     },
   },
-
   -- nvim-notify 单独配置（淡出效果）
   {
     "rcarriga/nvim-notify",
@@ -66,5 +89,12 @@ return {
         timeout = 3000,
       })
     end,
+  },
+  {
+    -- Highlight todo, notes, etc in comments
+    'folke/todo-comments.nvim',
+    event = 'VimEnter',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    opts = { signs = false },
   },
 }

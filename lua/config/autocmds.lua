@@ -62,3 +62,15 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
   end,
 })
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = augroup("lsp_attach"),
+  callback = function(event)
+    local map = function(keys, func, desc, mode)
+      mode = mode or "n"
+      vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
+
+      map('<leader>rn', vim.lsp.buf.rename, "Rename")
+    end
+  end,
+})

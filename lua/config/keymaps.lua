@@ -1,7 +1,7 @@
 -- define common options
 local opts = {
   noremap = true,      -- non-recursive
-  silent = false,       -- show message
+  silent = true,       -- show message
 }
 
 
@@ -78,14 +78,33 @@ vim.keymap.set('n', '<leader>boc', function ()
 end, { noremap = true, silent = true, desc = '只保留当前缓冲区' })
 
 -- 快速跳转（屏幕滚动）
-vim.keymap.set('n', '<leader>d', '<C-d>', { noremap = true, silent = true, desc = '向下滚动半屏' })
-vim.keymap.set('n', '<leader>u', '<C-u>', { noremap = true, silent = true, desc = '向上滚动半屏' })
+vim.keymap.set('n', '<leader>d', '<C-d>zz', opts) -- 向下滚动半屏并居中
+vim.keymap.set('n', '<leader>u', '<C-u>zz', opts) -- 向上滚动半屏并居中
 
 -- 在不同面板间快速移动焦点
 vim.keymap.set('n', '<leader>h', '<C-w>h', opts)
 vim.keymap.set('n', '<leader>j', '<C-w>j', opts)
 vim.keymap.set('n', '<leader>k', '<C-w>k', opts)
 vim.keymap.set('n', '<leader>l', '<C-w>l', opts)
+
+-- 窗口
+vim.keymap.set('n', '<leader>sv', '<C-w>v', opts) -- 垂直分割窗口
+vim.keymap.set('n', '<leader>sh', '<C-w>s', opts) -- 水平分割窗口
+vim.keymap.set('n', '<leader>se', '<C-w>=', opts) -- 使所有窗口等宽等高
+vim.keymap.set('n', '<leader>sc', '<C-w>c', opts) -- 关闭当前窗口
+vim.keymap.set('n', '<leader>so', '<C-w>o', opts) -- 关闭其他窗口
+
+-- 窗口大小调整
+vim.keymap.set('n', '<UP>', ':resize +2<CR>', opts) -- 增加窗口高度
+vim.keymap.set('n', '<DOWN>', ':resize -2<CR>', opts) -- 减少窗口高度
+vim.keymap.set('n', '<LEFT>', ':vertical resize -2<CR>', opts) -- 减少窗口宽度
+vim.keymap.set('n', '<RIGHT>', ':vertical resize +2<CR>', opts) -- 增加窗口宽度
+
+-- 标签页
+vim.keymap.set('n', '<leader>to', ':tabnew<CR>', opts) -- 打开新的标签页
+vim.keymap.set('n', '<leader>tc', ':tabclose<CR>', opts) -- 关闭当前标签页
+vim.keymap.set('n', '<leader>tn', ':tabn<CR>', opts) -- 切换到下一个标签页
+vim.keymap.set('n', '<leader>tp', ':tabp<CR>', opts) -- 切换到上一个标签页
 
 -- 文件操作
 vim.keymap.set('n', '<leader>w', ':w<CR>', opts) --保存
@@ -96,15 +115,20 @@ vim.keymap.set('n', '<leader>x', ':x<CR>', opts) --不保存退出
 -- telescope
 vim.keymap.set('n', '<leader>ff', ':Telescope find_files<CR>', { desc = 'Telescope find files' })
 vim.keymap.set('n', '<leader>fb', ':Telescope buffers<CR>', { desc = 'Telescope buffers' })
+vim.keymap.set('n', '<leader>fg', ':Telescope live_grep<CR>', { desc = 'Telescope live grep' })
+vim.keymap.set('n', '<leader>fh', ':Telescope help_tags<CR>', { desc = 'Telescope help tags' })
+vim.keymap.set('n', '<leader>fo', ':Telescope oldfiles<CR>', { desc = 'Telescope old files' })
+vim.keymap.set('n', '<leader>fc', ':Telescope commands<CR>', { desc = 'Telescope commands' })
+vim.keymap.set('n', '<leader>fcw', ':Telescope grep_string<CR>', { desc = 'Telescope current string' })
 
 -- overseer 任务运行
-vim.keymap.set('n', '<leader>or', '<cmd>OverseerRun<CR>', { desc = '运行任务' })
-vim.keymap.set('n', '<leader>ot', '<cmd>OverseerToggle<CR>', { desc = '任务面板' })
-vim.keymap.set('n', '<leader>ok', '<cmd>OverseerToggle<CR>', { desc = '停止任务(打开面板选择)' })
+vim.keymap.set('n', '<leader>or', '<cmd>OverseerRun<CR>', opts)
+vim.keymap.set('n', '<leader>ot', '<cmd>OverseerToggle<CR>', opts)
+vim.keymap.set('n', '<leader>ok', '<cmd>OverseerToggle<CR>', opts)
 
 -- Terminal mode - 退出 terminal 并关闭 overseer 面板
-vim.keymap.set('t', 'jk', '<C-\\><C-n>', { noremap = true, silent = true, desc = '退出Terminal回到Normal模式' })
-vim.keymap.set('t', 'qq', '<C-\\><C-n>', { noremap = true, silent = true, desc = '退出Terminal回到Normal模式' })
+vim.keymap.set('t', 'jk', '<C-\\><C-n>', opts) -- 在 terminal 模式下按 jk 退出到 normal 模式
+vim.keymap.set('t', 'qq', '<C-\\><C-n>', opts) -- 在 terminal 模式下按 jk 退出到 normal 模式
 
 -- 9. notice history
 vim.keymap.set("n", "<leader>nl", function()
@@ -114,10 +138,11 @@ vim.keymap.set("n", "<leader>nh", function()
   require("noice").cmd("history")
 end)
 
-vim.keymap.set("n", "gd", vim.lsp.buf.declaration, { desc = "Go to declaration" })
-vim.keymap.set("n", "gt", vim.lsp.buf.type_definition, { desc = "Go to type definition"
-})
-vim.keymap.set("n", "gr", vim.lsp.buf.references, { desc = "Go to references" })
+vim.keymap.set("n", "gd", vim.lsp.buf.declaration, opts)
+vim.keymap.set("n", "gt", vim.lsp.buf.type_definition, opts)
+vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+
+vim.keymap.set("n", "x", "\"_x", opts) -- 在 normal 模式下按 x 删除字符但不复制到剪贴板
 
 -----------------
 -- Visual mode --
