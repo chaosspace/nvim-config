@@ -51,6 +51,24 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+-- Rust format on save with tab_spaces=2
+vim.api.nvim_create_autocmd("BufWritePre", {
+  group = augroup("rust_format"),
+  pattern = "*.rs",
+  callback = function()
+    local file = vim.api.nvim_buf_get_name(0)
+    if file == "" then return end
+    local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+    local content = table.concat(lines, "\n") .. "\n"
+    local formatted = vim.fn.system({ "rustfmt", "--config", "tab_spaces=2", "--emit", "stdout" }, content)
+    if vim.v.shell_error ~= 0 then return end
+    if formatted ~= content then
+      local new_lines = vim.split(formatted:gsub("\n$", ""), "\n")
+      vim.api.nvim_buf_set_lines(0, 0, -1, false, new_lines)
+    end
+  end,
+})
+
 -- Auto create dir when saving a file, in case some intermediate directory does not exist
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   group = augroup("auto_create_dir"),
@@ -66,11 +84,17 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 vim.api.nvim_create_autocmd("LspAttach", {
   group = augroup("lsp_attach"),
   callback = function(event)
+    -- 默认关闭 inlay hints，用 <leader>th 切换
+    vim.lsp.inlay_hint.enable(false, { bufnr = event.buf })
+
     local map = function(keys, func, desc, mode)
       mode = mode or "n"
       vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
-
-      map('<leader>rn', vim.lsp.buf.rename, "Rename")
     end
+
+    map('<leader>rn', vim.lsp.buf.rename, "Rename")
+    map('<leader>th', function()
+      vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }), { bufnr = event.buf })
+    end, "Toggle Inlay Hints")
   end,
 })

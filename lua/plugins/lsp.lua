@@ -157,7 +157,7 @@ return {
         },
       },
       inlay_hints = {
-        enabled = true,
+        enabled = false,
       },
       capabilities = {},
       format = {

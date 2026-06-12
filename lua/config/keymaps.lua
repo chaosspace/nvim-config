@@ -78,8 +78,11 @@ vim.keymap.set('n', '<leader>boc', function ()
 end, { noremap = true, silent = true, desc = '只保留当前缓冲区' })
 
 -- 快速跳转（屏幕滚动）
-vim.keymap.set('n', '<leader>d', '<C-d>zz', opts) -- 向下滚动半屏并居中
-vim.keymap.set('n', '<leader>u', '<C-u>zz', opts) -- 向上滚动半屏并居中
+vim.keymap.set('n', '<leader>dv', '<C-d>zz', opts) -- 向下滚动半屏并居中
+vim.keymap.set('n', '<leader>uv', '<C-u>zz', opts) -- 向上滚动半屏并居中
+
+-- 黑洞删除（不影响寄存器）
+vim.keymap.set({"n", "v"}, "<leader>dd", '"_d')
 
 -- 在不同面板间快速移动焦点
 vim.keymap.set('n', '<leader>h', '<C-w>h', opts)
@@ -141,6 +144,9 @@ end)
 vim.keymap.set("n", "gd", vim.lsp.buf.declaration, opts)
 vim.keymap.set("n", "gt", vim.lsp.buf.type_definition, opts)
 vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, opts)
+vim.keymap.set("n", "]e", function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR }) end, opts)
+vim.keymap.set("n", "[e", function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR }) end, opts)
 
 vim.keymap.set("n", "x", "\"_x", opts) -- 在 normal 模式下按 x 删除字符但不复制到剪贴板
 
@@ -158,4 +164,47 @@ vim.keymap.set("v", "<S-Tab>", "<gv", opts) -- Shift+Tab 减少缩进
 
 -- 搜索计数（先 /搜索内容，再按 <leader>sm 统计匹配数量）
 vim.keymap.set('n', '<leader>sn', '<Cmd>%s///gn<CR>', { noremap = true, silent = true, desc = 'Count matches for last search' })
+vim.keymap.set('n', '<leader>/', '<cmd>nohlsearch<CR>', { desc = '清除搜索高亮' })
+
+-----------------
+-- DAP 调试 ----
+-----------------
+
+-- 断点操作
+vim.keymap.set('n', '<leader>db', '<cmd>DapToggleBreakpoint<CR>', { noremap = true, silent = true, desc = '切换断点' })
+vim.keymap.set('n', '<leader>dB', function()
+  require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))
+end, { noremap = true, silent = true, desc = '条件断点' })
+vim.keymap.set('n', '<leader>dl', function()
+  require('dap').set_breakpoint(nil, nil, vim.fn.input('Log point message: '))
+end, { noremap = true, silent = true, desc = '日志断点' })
+vim.keymap.set('n', '<leader>dC', function()
+  require('dap').clear_breakpoints()
+end, { noremap = true, silent = true, desc = '清除所有断点' })
+vim.keymap.set('n', '<leader>dL', '<cmd>DapShowLog<CR>', { noremap = true, silent = true, desc = '显示调试日志' })
+
+-- 调试控制
+vim.keymap.set('n', '<leader>dc', '<cmd>DapContinue<CR>', { noremap = true, silent = true, desc = '继续/启动调试' })
+vim.keymap.set('n', '<leader>dt', '<cmd>DapTerminate<CR>', { noremap = true, silent = true, desc = '终止调试' })
+vim.keymap.set('n', '<leader>dn', '<cmd>DapStepOver<CR>', { noremap = true, silent = true, desc = '单步跳过 (next)' })
+vim.keymap.set('n', '<leader>di', '<cmd>DapStepInto<CR>', { noremap = true, silent = true, desc = '单步进入 (into)' })
+vim.keymap.set('n', '<leader>do', '<cmd>DapStepOut<CR>', { noremap = true, silent = true, desc = '单步跳出 (out)' })
+vim.keymap.set('n', '<leader>dp', '<cmd>DapPause<CR>', { noremap = true, silent = true, desc = '暂停' })
+vim.keymap.set('n', '<leader>dr', '<cmd>DapRestartFrame<CR>', { noremap = true, silent = true, desc = '重启帧' })
+
+-- UI 操作
+vim.keymap.set('n', '<leader>du', function() require('dapui').toggle() end, { noremap = true, silent = true, desc = '切换调试 UI' })
+vim.keymap.set('n', '<leader>de', function() require('dapui').eval() end, { noremap = true, silent = true, desc = '求值表达式' })
+vim.keymap.set('v', '<leader>de', function() require('dapui').eval() end, { noremap = true, silent = true, desc = '求值选中表达式' })
+
+-- REPL
+vim.keymap.set('n', '<leader>dR', '<cmd>DapToggleRepl<CR>', { noremap = true, silent = true, desc = '切换 REPL' })
+
+-- Telescope 集成（查看断点列表）
+vim.keymap.set('n', '<leader>dF', function()
+  require('telescope').extensions.dap.frames()
+end, { noremap = true, silent = true, desc = '查看调用栈帧' })
+vim.keymap.set('n', '<leader>dP', function()
+  require('telescope').extensions.dap.list_breakpoints()
+end, { noremap = true, silent = true, desc = '查看断点列表' })
 
