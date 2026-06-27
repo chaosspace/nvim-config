@@ -78,8 +78,18 @@ vim.keymap.set('n', '<leader>boc', function ()
 end, { noremap = true, silent = true, desc = '只保留当前缓冲区' })
 
 -- 快速跳转（屏幕滚动）
-vim.keymap.set('n', '<leader>dv', '<C-d>zz', opts) -- 向下滚动半屏并居中
-vim.keymap.set('n', '<leader>uv', '<C-u>zz', opts) -- 向上滚动半屏并居中
+vim.keymap.set('n', '<leader>dv', function()
+  require('neoscroll').ctrl_d({ duration = 250 })
+  vim.defer_fn(function()
+    require('neoscroll').zz({ half_win_duration = 180 })
+  end, 260)
+end, { noremap = true, silent = true, desc = '向下平滑滚动半屏并居中' })
+vim.keymap.set('n', '<leader>uv', function()
+  require('neoscroll').ctrl_u({ duration = 250 })
+  vim.defer_fn(function()
+    require('neoscroll').zz({ half_win_duration = 180 })
+  end, 260)
+end, { noremap = true, silent = true, desc = '向上平滑滚动半屏并居中' })
 
 -- 黑洞删除（不影响寄存器）
 vim.keymap.set({"n", "v"}, "<leader>dd", '"_d')
@@ -207,4 +217,3 @@ end, { noremap = true, silent = true, desc = '查看调用栈帧' })
 vim.keymap.set('n', '<leader>dP', function()
   require('telescope').extensions.dap.list_breakpoints()
 end, { noremap = true, silent = true, desc = '查看断点列表' })
-

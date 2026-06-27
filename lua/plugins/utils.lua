@@ -78,6 +78,16 @@ return {
     ---@type ibl.config
     opts = {},
   },
+  -- 平滑滚动
+  {
+    "karb94/neoscroll.nvim",
+    opts = {},
+  },
+  -- 重新打开文件时恢复上次位置
+  {
+    "nxhung2304/lastplace.nvim",
+    opts = {},
+  },
   -- notice
   {
     "folke/noice.nvim",
