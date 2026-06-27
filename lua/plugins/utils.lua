@@ -2,9 +2,7 @@ return {
   -- 快速搜索文件
   {
     "nvim-telescope/telescope.nvim",
-    dependencies = {
-      "nvim-telescope/telescope-dap.nvim",
-    },
+    cmd = "Telescope",
     config = function()
       local telescope = require("telescope")
       telescope.setup({
@@ -54,34 +52,83 @@ return {
           },
         },
       })
-      -- 加载 DAP 扩展
-      telescope.load_extension('dap')
     end,
   },
   -- 显示左侧文件夹
   {
     "nvim-tree/nvim-tree.lua",
     version = "*",
-    lazy = false,
+    cmd = { "NvimTreeToggle", "NvimTreeOpen", "NvimTreeFocus", "NvimTreeFindFile" },
     dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
-    config = function()
-      require("nvim-tree").setup {}
+    init = function()
+      vim.g.loaded_netrw = 1
+      vim.g.loaded_netrwPlugin = 1
+      vim.opt.termguicolors = true
+    end,
+    opts = {
+      sort = {
+        sorter = "case_sensitive",
+      },
+      view = {
+        width = 30,
+      },
+      renderer = {
+        group_empty = true,
+      },
+      filters = {
+        dotfiles = true,
+      },
+    },
+    config = function(_, opts)
+      require("nvim-tree").setup(opts)
     end,
   },
   --显示空格
   {
     "lukas-reineke/indent-blankline.nvim",
     main = "ibl",
+    event = { "BufReadPost", "BufNewFile" },
     ---@module "ibl"
     ---@type ibl.config
-    opts = {},
+    opts = {
+      scope = {
+        enabled = true,
+        show_start = true,
+        show_end = false,
+        injected_languages = false,
+        highlight = { "Function", "Label" },
+        priority = 500,
+      },
+    },
   },
   -- 平滑滚动
   {
     "karb94/neoscroll.nvim",
     opts = {},
+    keys = {
+      {
+        "<leader>dv",
+        function()
+          require("neoscroll").ctrl_d({ duration = 250 })
+          vim.defer_fn(function()
+            require("neoscroll").zz({ half_win_duration = 180 })
+          end, 260)
+        end,
+        desc = "向下平滑滚动半屏并居中",
+      },
+      {
+        "<leader>uv",
+        function()
+          require("neoscroll").ctrl_u({ duration = 250 })
+          vim.defer_fn(function()
+            require("neoscroll").zz({ half_win_duration = 180 })
+          end, 260)
+        end,
+        desc = "向上平滑滚动半屏并居中",
+      },
+    },
   },
   -- 重新打开文件时恢复上次位置
   {
@@ -91,6 +138,10 @@ return {
   -- 折叠标记显示在 sign column
   {
     "netmute/foldsigns.nvim",
+    event = { "BufReadPost", "BufNewFile" },
+    dependencies = {
+      { "netmute/foldchanged.nvim", lazy = true },
+    },
   },
   -- notice
   {
@@ -101,6 +152,22 @@ return {
       "rcarriga/nvim-notify",
     },
     opts = {
+      lsp = {
+        override = {
+          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+          ["vim.lsp.util.stylize_markdown"] = true,
+          ["cmp.entry.get_documentation"] = true,
+        },
+      },
+      cmdline = {
+        view = "cmdline_popup",
+      },
+      presets = {
+        bottom_search = false,
+        command_palette = false,
+        long_message_to_split = false,
+        inc_rename = false,
+      },
       -- 通知使用 nvim-notify
       notify = {
         view = "notify",
@@ -115,6 +182,7 @@ return {
   -- nvim-notify 单独配置（淡出效果）
   {
     "rcarriga/nvim-notify",
+    lazy = true,
     config = function()
       require("notify").setup({
         stages = "fade",

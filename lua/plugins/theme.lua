@@ -7,7 +7,7 @@ return {
   },
   {
     "sphamba/smear-cursor.nvim",
-
+    event = "VeryLazy",
     opts = {
       time_interval = 4,
       smear_insert_mode = true,

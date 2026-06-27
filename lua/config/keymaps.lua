@@ -7,7 +7,7 @@ local opts = {
 
 local function switch_to_buffer()
   local char = vim.fn.getchar()
-  local num = char - 48
+  local num = type(char) == "number" and tonumber(vim.fn.nr2char(char)) or tonumber(char)
 
   -- 获取所有buffer
   local bufs = vim.fn.getbufinfo({ buflisted = 1 })
@@ -23,19 +23,38 @@ local function switch_to_buffer()
   table.sort(buf_ids)
 
 
-  if num >= 1 and num <= 9 then
-    if num > #buf_ids then
-      vim.notify('Buffer ' .. num .. ' 不存在 (当前只有 ' .. #buf_ids .. ' 个buffer)', vim.log.levels.WARN)
-      return
-    end
-    local target_buf = buf_ids[num]
-    local ok, _ = pcall(vim.cmd, 'buffer ' .. target_buf)
-    if not ok then
-      vim.notify('Buffer ' .. num .. ' 不存在', vim.log.levels.ERROR)
-    end
-  else
+  if not num or num < 1 or num > 9 then
     vim.notify('请输入数字 1 - 9', vim.log.levels.WARN)
+    return
   end
+
+  if num > #buf_ids then
+    vim.notify('Buffer ' .. num .. ' 不存在 (当前只有 ' .. #buf_ids .. ' 个buffer)', vim.log.levels.WARN)
+    return
+  end
+  local target_buf = buf_ids[num]
+  local ok, _ = pcall(vim.cmd, 'buffer ' .. target_buf)
+  if not ok then
+    vim.notify('Buffer ' .. num .. ' 不存在', vim.log.levels.ERROR)
+  end
+end
+
+local function load_dap()
+  require("lazy").load({ plugins = { "nvim-dap" }, wait = true })
+  return require("dap")
+end
+
+local function load_dapui()
+  load_dap()
+  return require("dapui")
+end
+
+local function load_telescope_dap()
+  load_dap()
+  require("lazy").load({ plugins = { "telescope-dap.nvim" }, wait = true })
+  local telescope = require("telescope")
+  telescope.load_extension("dap")
+  return telescope.extensions.dap
 end
 
 
@@ -53,7 +72,7 @@ vim.g.maplocalleader = ' '  -- 局部 Leader 键（用于缓冲区相关操作�
 -----------------
 
 -- NvimTree 快捷键（结合之前的简化命令）
-vim.keymap.set('n', '<leader>tr', '<cmd>NvimTreeOpen<CR>', { noremap = true, silent = true, desc = '打开/关闭文件树' })
+vim.keymap.set('n', '<leader>tr', '<cmd>NvimTreeToggle<CR>', { noremap = true, silent = true, desc = '切换文件树' })
 
 -- 缓冲区操作
 vim.keymap.set('n', '<leader>bn', '<cmd>bnext<CR>', { noremap = true, silent = true, desc = '下一个缓冲区' })
@@ -76,20 +95,6 @@ vim.keymap.set('n', '<leader>boc', function ()
     end
   end
 end, { noremap = true, silent = true, desc = '只保留当前缓冲区' })
-
--- 快速跳转（屏幕滚动）
-vim.keymap.set('n', '<leader>dv', function()
-  require('neoscroll').ctrl_d({ duration = 250 })
-  vim.defer_fn(function()
-    require('neoscroll').zz({ half_win_duration = 180 })
-  end, 260)
-end, { noremap = true, silent = true, desc = '向下平滑滚动半屏并居中' })
-vim.keymap.set('n', '<leader>uv', function()
-  require('neoscroll').ctrl_u({ duration = 250 })
-  vim.defer_fn(function()
-    require('neoscroll').zz({ half_win_duration = 180 })
-  end, 260)
-end, { noremap = true, silent = true, desc = '向上平滑滚动半屏并居中' })
 
 -- 黑洞删除（不影响寄存器）
 vim.keymap.set({"n", "v"}, "<leader>dd", '"_d')
@@ -132,12 +137,12 @@ vim.keymap.set('n', '<leader>fg', ':Telescope live_grep<CR>', { desc = 'Telescop
 vim.keymap.set('n', '<leader>fh', ':Telescope help_tags<CR>', { desc = 'Telescope help tags' })
 vim.keymap.set('n', '<leader>fo', ':Telescope oldfiles<CR>', { desc = 'Telescope old files' })
 vim.keymap.set('n', '<leader>fc', ':Telescope commands<CR>', { desc = 'Telescope commands' })
-vim.keymap.set('n', '<leader>fcw', ':Telescope grep_string<CR>', { desc = 'Telescope current string' })
+vim.keymap.set('n', '<leader>fw', ':Telescope grep_string<CR>', { desc = 'Telescope current word' })
 
 -- overseer 任务运行
-vim.keymap.set('n', '<leader>or', '<cmd>OverseerRun<CR>', opts)
-vim.keymap.set('n', '<leader>ot', '<cmd>OverseerToggle<CR>', opts)
-vim.keymap.set('n', '<leader>ok', '<cmd>OverseerToggle<CR>', opts)
+vim.keymap.set('n', '<leader>or', '<cmd>OverseerRun<CR>', { noremap = true, silent = true, desc = '运行任务' })
+vim.keymap.set('n', '<leader>ot', '<cmd>OverseerToggle<CR>', { noremap = true, silent = true, desc = '切换任务面板' })
+vim.keymap.set('n', '<leader>ok', '<cmd>OverseerQuickAction<CR>', { noremap = true, silent = true, desc = '任务快捷操作' })
 
 -- Terminal mode - 退出 terminal 并关闭 overseer 面板
 vim.keymap.set('t', 'jk', '<C-\\><C-n>', opts) -- 在 terminal 模式下按 jk 退出到 normal 模式
@@ -151,9 +156,6 @@ vim.keymap.set("n", "<leader>nh", function()
   require("noice").cmd("history")
 end)
 
-vim.keymap.set("n", "gd", vim.lsp.buf.declaration, opts)
-vim.keymap.set("n", "gt", vim.lsp.buf.type_definition, opts)
-vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
 vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, opts)
 vim.keymap.set("n", "]e", function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR }) end, opts)
 vim.keymap.set("n", "[e", function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR }) end, opts)
@@ -183,13 +185,13 @@ vim.keymap.set('n', '<leader>/', '<cmd>nohlsearch<CR>', { desc = '清除搜索�
 -- 断点操作
 vim.keymap.set('n', '<leader>db', '<cmd>DapToggleBreakpoint<CR>', { noremap = true, silent = true, desc = '切换断点' })
 vim.keymap.set('n', '<leader>dB', function()
-  require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))
+  load_dap().set_breakpoint(vim.fn.input('Breakpoint condition: '))
 end, { noremap = true, silent = true, desc = '条件断点' })
 vim.keymap.set('n', '<leader>dl', function()
-  require('dap').set_breakpoint(nil, nil, vim.fn.input('Log point message: '))
+  load_dap().set_breakpoint(nil, nil, vim.fn.input('Log point message: '))
 end, { noremap = true, silent = true, desc = '日志断点' })
 vim.keymap.set('n', '<leader>dC', function()
-  require('dap').clear_breakpoints()
+  load_dap().clear_breakpoints()
 end, { noremap = true, silent = true, desc = '清除所有断点' })
 vim.keymap.set('n', '<leader>dL', '<cmd>DapShowLog<CR>', { noremap = true, silent = true, desc = '显示调试日志' })
 
@@ -203,17 +205,17 @@ vim.keymap.set('n', '<leader>dp', '<cmd>DapPause<CR>', { noremap = true, silent 
 vim.keymap.set('n', '<leader>dr', '<cmd>DapRestartFrame<CR>', { noremap = true, silent = true, desc = '重启帧' })
 
 -- UI 操作
-vim.keymap.set('n', '<leader>du', function() require('dapui').toggle() end, { noremap = true, silent = true, desc = '切换调试 UI' })
-vim.keymap.set('n', '<leader>de', function() require('dapui').eval() end, { noremap = true, silent = true, desc = '求值表达式' })
-vim.keymap.set('v', '<leader>de', function() require('dapui').eval() end, { noremap = true, silent = true, desc = '求值选中表达式' })
+vim.keymap.set('n', '<leader>du', function() load_dapui().toggle() end, { noremap = true, silent = true, desc = '切换调试 UI' })
+vim.keymap.set('n', '<leader>de', function() load_dapui().eval() end, { noremap = true, silent = true, desc = '求值表达式' })
+vim.keymap.set('v', '<leader>de', function() load_dapui().eval() end, { noremap = true, silent = true, desc = '求值选中表达式' })
 
 -- REPL
 vim.keymap.set('n', '<leader>dR', '<cmd>DapToggleRepl<CR>', { noremap = true, silent = true, desc = '切换 REPL' })
 
 -- Telescope 集成（查看断点列表）
 vim.keymap.set('n', '<leader>dF', function()
-  require('telescope').extensions.dap.frames()
+  load_telescope_dap().frames()
 end, { noremap = true, silent = true, desc = '查看调用栈帧' })
 vim.keymap.set('n', '<leader>dP', function()
-  require('telescope').extensions.dap.list_breakpoints()
+  load_telescope_dap().list_breakpoints()
 end, { noremap = true, silent = true, desc = '查看断点列表' })

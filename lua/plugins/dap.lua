@@ -3,7 +3,29 @@
 
 return {
   {
+    'nvim-telescope/telescope-dap.nvim',
+    lazy = true,
+    dependencies = {
+      'nvim-telescope/telescope.nvim',
+      'mfussenegger/nvim-dap',
+    },
+  },
+  {
     'mfussenegger/nvim-dap',
+    cmd = {
+      'DapContinue',
+      'DapLoadLaunchJSON',
+      'DapPause',
+      'DapRestartFrame',
+      'DapRunLast',
+      'DapShowLog',
+      'DapStepInto',
+      'DapStepOut',
+      'DapStepOver',
+      'DapTerminate',
+      'DapToggleBreakpoint',
+      'DapToggleRepl',
+    },
     dependencies = {
       -- 调试 UI
       'rcarriga/nvim-dap-ui',

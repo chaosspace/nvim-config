@@ -9,7 +9,12 @@ return {
   {
     'L3MON4D3/LuaSnip',
     version = 'v2.*',
+    event = 'InsertEnter',
     build = 'make install_jsregexp',
+    dependencies = { 'rafamadriz/friendly-snippets' },
+    config = function()
+      require('luasnip.loaders.from_vscode').lazy_load()
+    end,
   },
   {
     'hrsh7th/nvim-cmp',
@@ -18,8 +23,6 @@ return {
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-buffer',
       'hrsh7th/cmp-path',
-      'hrsh7th/cmp-cmdline',
-      'rafamadriz/friendly-snippets',
     },
     config = function()
       local cmp = require('cmp')
@@ -124,17 +127,12 @@ return {
   },
   {
     'williamboman/mason-lspconfig.nvim',
+    lazy = true,
     dependencies = { 'williamboman/mason.nvim' },
-    opts = {
-      ensure_installed = {
-        'rust_analyzer',
-        'ts_ls',
-        'lua_ls',
-      },
-    },
   },
   {
     'neovim/nvim-lspconfig',
+    event = { 'BufReadPre', 'BufNewFile' },
     dependencies = { 'williamboman/mason-lspconfig.nvim' },
     opts = {
       diagnostics = {
@@ -240,10 +238,9 @@ return {
       local servers = opts.servers
       local capabilities = vim.lsp.protocol.make_client_capabilities()
 
-      -- Try to get blink.cmp capabilities if available
-      local ok, blink = pcall(require, 'blink.cmp')
+      local ok, cmp_nvim_lsp = pcall(require, 'cmp_nvim_lsp')
       if ok then
-        capabilities = vim.tbl_deep_extend('force', {}, capabilities, blink.get_lsp_capabilities())
+        capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
       end
 
       local function setup(server)

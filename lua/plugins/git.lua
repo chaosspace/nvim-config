@@ -7,13 +7,9 @@ return {
 
       -- Only one of these is needed.
       "sindrets/diffview.nvim",        -- optional
-      "esmuellert/codediff.nvim",      -- optional
 
       -- Only one of these is needed.
       "nvim-telescope/telescope.nvim", -- optional
-      "ibhagwan/fzf-lua",              -- optional
-      "nvim-mini/mini.pick",           -- optional
-      "folke/snacks.nvim",             -- optional
     },
     cmd = "Neogit",
     keys = {
@@ -74,14 +70,16 @@ return {
         },
         on_attach = function(bufnr)
           local gs = package.loaded.gitsigns
-          local opt = { buffer = bufnr }
+          local function map(keys, func, desc)
+            vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
+          end
 
           -- 查看当前航的Git历史
-          vim.keymap.set('n', 'gh', gs.preview_hunk, opt)
+          map('gh', gs.preview_hunk, 'Preview git hunk')
           -- 暂存当前块
-          vim.keymap.set('n', 'gs', gs.stage_hunk, opt)
-          -- 撤销暂存当前块
-          vim.keymap.set('n', 'gr', gs.reset_hunk, opt)
+          map('gs', gs.stage_hunk, 'Stage git hunk')
+          -- 重置当前块，避免覆盖 LSP references 的 gr
+          map('<leader>gr', gs.reset_hunk, 'Reset git hunk')
         end
       }
     end

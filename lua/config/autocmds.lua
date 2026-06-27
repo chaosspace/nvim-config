@@ -2,6 +2,7 @@ local function augroup(name)
   return vim.api.nvim_create_augroup("lazyvim_" .. name, { clear = true })
 end
 
+local rustfmt_running = {}
 
 -- Highlight on yank
 vim.api.nvim_create_autocmd("TextYankPost", {
@@ -33,21 +34,46 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
--- Rust format on save with tab_spaces=2
-vim.api.nvim_create_autocmd("BufWritePre", {
+-- Rust format after save with tab_spaces=2 without blocking the write.
+vim.api.nvim_create_autocmd("BufWritePost", {
   group = augroup("rust_format"),
   pattern = "*.rs",
-  callback = function()
-    local file = vim.api.nvim_buf_get_name(0)
+  callback = function(event)
+    if vim.fn.executable("rustfmt") == 0 then return end
+    local buf = event.buf
+    if rustfmt_running[buf] then return end
+    local file = vim.api.nvim_buf_get_name(buf)
     if file == "" then return end
-    local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+
+    local changedtick = vim.api.nvim_buf_get_changedtick(buf)
+    local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
     local content = table.concat(lines, "\n") .. "\n"
-    local formatted = vim.fn.system({ "rustfmt", "--config", "tab_spaces=2", "--emit", "stdout" }, content)
-    if vim.v.shell_error ~= 0 then return end
-    if formatted ~= content then
-      local new_lines = vim.split(formatted:gsub("\n$", ""), "\n")
-      vim.api.nvim_buf_set_lines(0, 0, -1, false, new_lines)
-    end
+
+    rustfmt_running[buf] = true
+    vim.system({ "rustfmt", "--config", "tab_spaces=2", "--emit", "stdout" }, {
+      stdin = content,
+      text = true,
+    }, vim.schedule_wrap(function(result)
+      rustfmt_running[buf] = nil
+      if result.code ~= 0 or not result.stdout or result.stdout == content then return end
+      if not vim.api.nvim_buf_is_valid(buf) then return end
+      if vim.api.nvim_buf_get_changedtick(buf) ~= changedtick or vim.bo[buf].modified then return end
+
+      local view
+      if buf == vim.api.nvim_get_current_buf() then
+        view = vim.fn.winsaveview()
+      end
+
+      local new_lines = vim.split(result.stdout:gsub("\n$", ""), "\n")
+      vim.api.nvim_buf_set_lines(buf, 0, -1, false, new_lines)
+      vim.api.nvim_buf_call(buf, function()
+        vim.cmd("silent noautocmd write")
+      end)
+
+      if view and buf == vim.api.nvim_get_current_buf() then
+        vim.fn.winrestview(view)
+      end
+    end))
   end,
 })
 
@@ -75,6 +101,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end
 
     map('<leader>rn', vim.lsp.buf.rename, "Rename")
+    map('gd', vim.lsp.buf.declaration, "Go to Declaration")
+    map('gt', vim.lsp.buf.type_definition, "Go to Type Definition")
+    map('gr', vim.lsp.buf.references, "References")
     map('<leader>th', function()
       vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }), { bufnr = event.buf })
     end, "Toggle Inlay Hints")
