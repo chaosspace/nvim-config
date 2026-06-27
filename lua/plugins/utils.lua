@@ -88,6 +88,10 @@ return {
     "nxhung2304/lastplace.nvim",
     opts = {},
   },
+  -- 折叠标记显示在 sign column
+  {
+    "netmute/foldsigns.nvim",
+  },
   -- notice
   {
     "folke/noice.nvim",
