@@ -20,6 +20,14 @@ return {
     'lewis6991/gitsigns.nvim',
     event = { 'BufReadPre', 'BufNewFile' },
     config = function()
+      -- 当 gitsigns 更新时刷新 lualine
+      vim.api.nvim_create_autocmd('User', {
+        pattern = 'GitSignsUpdate',
+        callback = function()
+          require('lualine').refresh()
+        end,
+      })
+
       require('gitsigns').setup {
         signs = {
           add          = { text = 'A' },
@@ -47,14 +55,11 @@ return {
         },
         auto_attach = true,
         attach_to_untracked = false,
-        current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
+        current_line_blame = true, -- 启用 blame 以填充字典供 lualine 使用
         current_line_blame_opts = {
-          virt_text = true,
-          virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
-          delay = 1000,
+          virt_text = false, -- 不显示行尾虚拟文本
+          delay = 100, -- 100ms 延迟，更快响应
           ignore_whitespace = false,
-          virt_text_priority = 100,
-          use_focus = true,
         },
         current_line_blame_formatter = '<author>, <author_time:%R> - <summary>',
         sign_priority = 6,
@@ -82,6 +87,14 @@ return {
           map('<leader>gr', gs.reset_hunk, 'Reset git hunk')
         end
       }
+
+      -- 手动触发 current_line_blame 的初始化
+      vim.defer_fn(function()
+        local clb = require('gitsigns.current_line_blame')
+        if clb and clb.refresh then
+          clb.refresh()
+        end
+      end, 100)
     end
   }
 }

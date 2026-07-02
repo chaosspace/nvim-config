@@ -15,5 +15,15 @@ return {
       desc = "Buffer Local Keymaps (which-key)",
     },
   },
-  { 'nvim-mini/mini.starter', version = false },
+  {
+    'nvim-mini/mini.starter',
+    version = false,
+    config = function()
+      local starter = require('mini.starter')
+      starter.setup({
+        footer = "Be your own GOAT",
+        silent = true, -- 禁用查询错误提示
+      })
+    end,
+  },
 }
