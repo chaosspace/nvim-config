@@ -132,7 +132,7 @@ return {
   },
   {
     'neovim/nvim-lspconfig',
-    event = { 'BufReadPre', 'BufNewFile' },
+    event = { 'BufReadPre', 'BufNewFile' },  -- LSP需要提前加载
     dependencies = { 'williamboman/mason-lspconfig.nvim' },
     opts = {
       diagnostics = {

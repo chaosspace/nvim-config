@@ -2,6 +2,9 @@ vim.opt.clipboard = 'unnamedplus' -- use system clipboard
 vim.opt.completeopt = { 'menu', 'menuone', 'noselect' }
 vim.opt.mouse = 'a' -- allow the mouse to be used in Nvim
 
+-- 禁用不需要的内置插件
+vim.g.loaded_matchit = 1  -- 禁用 matchit.vim
+
 -- UI Config
 vim.opt.number = true -- show absolute number
 vim.opt.relativenumber = true -- add numbers to each line on the left side

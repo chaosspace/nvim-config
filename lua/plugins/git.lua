@@ -18,7 +18,7 @@ return {
   },
   {
     'lewis6991/gitsigns.nvim',
-    event = { 'BufReadPre', 'BufNewFile' },
+    event = { 'BufReadPre', 'BufNewFile' },  -- gitsigns需要提前加载
     config = function()
       -- 当 gitsigns 更新时刷新 lualine
       vim.api.nvim_create_autocmd('User', {

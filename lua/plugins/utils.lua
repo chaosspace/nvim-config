@@ -138,7 +138,7 @@ return {
   -- 折叠标记显示在 sign column
   {
     "netmute/foldsigns.nvim",
-    event = { "BufReadPost", "BufNewFile" },
+    event = "VeryLazy",  -- 延迟到VeryLazy阶段加载
     dependencies = {
       { "netmute/foldchanged.nvim", lazy = true },
     },
@@ -193,7 +193,7 @@ return {
   {
     -- Highlight todo, notes, etc in comments
     'folke/todo-comments.nvim',
-    event = 'VimEnter',
+    event = 'VeryLazy',  -- 延迟到VeryLazy阶段加载
     dependencies = { 'nvim-lua/plenary.nvim' },
     opts = { signs = false },
   },

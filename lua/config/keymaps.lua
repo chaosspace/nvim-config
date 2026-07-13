@@ -139,6 +139,15 @@ vim.keymap.set('n', '<leader>fo', ':Telescope oldfiles<CR>', { desc = 'Telescope
 vim.keymap.set('n', '<leader>fc', ':Telescope commands<CR>', { desc = 'Telescope commands' })
 vim.keymap.set('n', '<leader>fw', ':Telescope grep_string<CR>', { desc = 'Telescope current word' })
 
+-- 性能诊断
+vim.keymap.set('n', '<leader>pl', '<cmd>Lazy profile<CR>', { noremap = true, silent = true, desc = '插件性能分析' })
+vim.keymap.set('n', '<leader>pp', function()
+  local plugins = require("lazy").plugins()
+  local count = 0
+  for _ in pairs(plugins) do count = count + 1 end
+  print("已加载 " .. count .. " 个插件")
+end, { noremap = true, silent = true, desc = '显示插件数量' })
+
 -- overseer 任务运行
 vim.keymap.set('n', '<leader>or', '<cmd>OverseerRun<CR>', { noremap = true, silent = true, desc = '运行任务' })
 vim.keymap.set('n', '<leader>ot', '<cmd>OverseerToggle<CR>', { noremap = true, silent = true, desc = '切换任务面板' })
