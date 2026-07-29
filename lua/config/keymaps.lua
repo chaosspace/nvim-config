@@ -85,7 +85,7 @@ vim.keymap.set('n', '<leader>bd', function()
   -- 自动切换到上一个 buffer（避免关闭后无窗口）
   vim.cmd("bprevious")
 end, { noremap = true, silent = true, desc = '删除当前缓冲区' })
-vim.keymap.set('n', '<leader>ba', switch_to_buffer, { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>ba', switch_to_buffer, { noremap = true, silent = true, desc = '切换到指定缓冲区' })
 vim.keymap.set('n', '<leader>boc', function ()
   local current_buf = vim.api.nvim_get_current_buf()
   local bufs = vim.api.nvim_list_bufs()
@@ -100,10 +100,10 @@ end, { noremap = true, silent = true, desc = '只保留当前缓冲区' })
 vim.keymap.set({"n", "v"}, "<leader>dd", '"_d')
 
 -- 在不同面板间快速移动焦点
-vim.keymap.set('n', '<leader>h', '<C-w>h', opts)
-vim.keymap.set('n', '<leader>j', '<C-w>j', opts)
-vim.keymap.set('n', '<leader>k', '<C-w>k', opts)
-vim.keymap.set('n', '<leader>l', '<C-w>l', opts)
+vim.keymap.set('n', '<C-h>', '<C-w>h', opts)
+vim.keymap.set('n', '<C-j>', '<C-w>j', opts)
+vim.keymap.set('n', '<C-k>', '<C-w>k', opts)
+vim.keymap.set('n', '<C-l>', '<C-w>l', opts)
 
 -- 窗口
 vim.keymap.set('n', '<leader>sv', '<C-w>v', opts) -- 垂直分割窗口
@@ -128,7 +128,7 @@ vim.keymap.set('n', '<leader>tp', ':tabp<CR>', opts) -- 切换到上一个标签
 vim.keymap.set('n', '<leader>w', ':w<CR>', opts) --保存
 vim.keymap.set('n', '<leader>q', ':q<CR>', opts) --关闭
 vim.keymap.set('n', '<leader>Q', ':q!<CR>', opts) --不保存退出
-vim.keymap.set('n', '<leader>x', ':x<CR>', opts) --不保存退出
+vim.keymap.set('n', '<leader>x', ':x<CR>', opts) --保存并退出
 
 -- telescope
 vim.keymap.set('n', '<leader>ff', ':Telescope find_files<CR>', { desc = 'Telescope find files' })
@@ -184,7 +184,7 @@ vim.keymap.set("v", "<S-Tab>", "<gv", opts) -- Shift+Tab 减少缩进
 -------------
 
 -- 搜索计数（先 /搜索内容，再按 <leader>sm 统计匹配数量）
-vim.keymap.set('n', '<leader>sn', '<Cmd>%s///gn<CR>', { noremap = true, silent = true, desc = 'Count matches for last search' })
+vim.keymap.set('n', '<leader>sn', '<Cmd>%s///gn<CR>', { noremap = true, silent = true, desc = '统计搜索匹配数量' })
 vim.keymap.set('n', '<leader>/', '<cmd>nohlsearch<CR>', { desc = '清除搜索高亮' })
 
 -----------------
